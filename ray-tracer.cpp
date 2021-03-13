@@ -6,12 +6,23 @@
 #include "hittable-list.h"
 #include "sphere.h"
 
-vec3 color(const ray& r, hittable *world) {
+vec3 random_in_unit_sphere(std::uniform_real_distribution<>& dis,
+                           std::mt19937& gen) {
+    vec3 p;
+    do {
+        p = 2.0 * vec3(dis(gen), dis(gen), dis(gen)) - vec3(1, 1, 1);
+    } while (p.squared_length() >= 1.0);
+    
+    return p;
+}
+
+vec3 color(const ray& r, hittable *world,
+           std::uniform_real_distribution<>& dis, std::mt19937& gen) {
     hit_record rec;
-    if (world->hit(r, 0.0, MAXFLOAT, rec)) 
-        return 0.5 * vec3(rec.normal.x() + 1.0,
-                          rec.normal.y() + 1.0,
-                          rec.normal.z() + 1.0);
+    if (world->hit(r, 0.0, MAXFLOAT, rec)) {
+        vec3 target = rec.p + rec.normal + random_in_unit_sphere(dis, gen);
+        return 0.5 * color(ray(rec.p, target - rec.p), world, dis, gen);
+    }
     else {
         vec3 unit_direction = unit_vector(r.direction());
         float t = 0.5 * (unit_direction.y() + 1.0);
@@ -49,7 +60,7 @@ int main() {
                 float v = float(j + dis(gen)) / float(ny);
                 ray r = cam.get_ray(u, v);
                 vec3 p = r.point_at_parameter(2.0);  /* Unused? */
-                col += color(r, world);
+                col += color(r, world, dis, gen);
             }
 
             col /= float(ns);
