@@ -19,7 +19,9 @@ vec3 random_in_unit_sphere(std::uniform_real_distribution<>& dis,
 vec3 color(const ray& r, hittable *world,
            std::uniform_real_distribution<>& dis, std::mt19937& gen) {
     hit_record rec;
-    if (world->hit(r, 0.0, MAXFLOAT, rec)) {
+
+    /* Use 0.001 for t_min to remove shadow acne. */
+    if (world->hit(r, 0.001, MAXFLOAT, rec)) {
         vec3 target = rec.p + rec.normal + random_in_unit_sphere(dis, gen);
         return 0.5 * color(ray(rec.p, target - rec.p), world, dis, gen);
     }
@@ -62,8 +64,11 @@ int main() {
                 vec3 p = r.point_at_parameter(2.0);  /* Unused? */
                 col += color(r, world, dis, gen);
             }
-
             col /= float(ns);
+
+            /* Adds gamma correction. */
+            col = vec3(sqrt(col[0]), sqrt(col[1]), sqrt(col[2]));
+
             int ir = int(255.99*col[0]);
             int ig = int(255.99*col[1]);
             int ib = int(255.99*col[2]);
