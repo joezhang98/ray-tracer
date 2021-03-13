@@ -38,7 +38,7 @@ int main() {
         for (int i = 0; i < nx; i++) {
             float u = float(i) / float(nx);
             float v = float(j) / float(ny);
-            ray r(origin, lower_left_corner + u*horizontal + v*vertical);
+            ray r(origin, lower_left_corner + u * horizontal + v * vertical);
             vec3 p = r.point_at_parameter(2.0);  /* Unused? */
             vec3 col = color(r, world);
 
