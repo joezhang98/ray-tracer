@@ -2,7 +2,7 @@
 #define HITTABLE_LISTH
 #include "hittable.h"
 
-class hittable_list: public hittable {
+class hittable_list : public hittable {
 public:
     hittable_list() {}
     hittable_list(hittable **l, int n) {list = l, list_size = n; }
