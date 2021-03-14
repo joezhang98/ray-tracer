@@ -50,8 +50,14 @@ int main() {
                          new lambertian(vec3(0.8, 0.3, 0.3)));
     list[1] = new sphere(vec3(0, -100.5, -1), 100,
                          new lambertian(vec3(0.8, 0.8, 0.0)));
-    list[2] = new sphere(vec3(1, 0, -1) ,0.5, new metal(vec3(0.8, 0.6, 0.2)));
-    list[3] = new sphere(vec3(-1, 0, -1) ,0.5, new metal(vec3(0.8, 0.8, 0.8)));
+
+    /* High-fuzz metal. */
+    list[2] = new sphere(vec3(1, 0, -1) ,0.5,
+                         new metal(vec3(0.8, 0.6, 0.2), 1.0));
+    
+    /* Low-fuzz metal. */
+    list[3] = new sphere(vec3(-1, 0, -1) ,0.5,
+                         new metal(vec3(0.8, 0.8, 0.8), 0.3));
     
     hittable *world = new hittable_list(list, 4);
     camera cam;
