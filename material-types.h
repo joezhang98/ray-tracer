@@ -2,10 +2,8 @@
 #define MATERIAL_TYPESH
 #include "material.h"
 
-vec3 reflect(const vec3& v, const vec3& n) {
-    return v - 2 * dot(v, n) * n;
-}
-
+/* Selects and returns a random point in a unit radius sphere
+   centered at the origin. */
 vec3 random_in_unit_sphere(std::uniform_real_distribution<>& dis,
                            std::mt19937& gen) {
     vec3 p;
@@ -16,6 +14,15 @@ vec3 random_in_unit_sphere(std::uniform_real_distribution<>& dis,
     return p;
 }
 
+/* Given an incident ray with direction V and a surface normal N,
+   returns the direction of the reflected ray. */
+vec3 reflect(const vec3& v, const vec3& n) {
+    return v - 2 * dot(v, n) * n;
+}
+
+/*
+   A diffuse material.
+*/
 class lambertian : public material {
 public:
     lambertian(const vec3& a) : albedo(a) {}
@@ -32,6 +39,9 @@ public:
     vec3 albedo;
 };
 
+/*
+   A metal material.
+*/
 class metal : public material {
 public:
     metal(const vec3& a, float f) : albedo(a) {
@@ -46,7 +56,7 @@ public:
                          std::mt19937& gen) const {
         vec3 reflected = reflect(unit_vector(r_in.direction()), rec.normal);
 
-        /* Randomize reflected direction using fuzz. */
+        /* Randomize reflected direction using FUZZ. */
         scattered = ray(rec.p, reflected +
                         fuzz * random_in_unit_sphere(dis, gen));
 
