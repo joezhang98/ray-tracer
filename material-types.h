@@ -84,4 +84,46 @@ public:
     float fuzz;
 };
 
+/*
+   A dielectric material.
+*/
+class dielectric : public material {
+public:
+    dielectric(float ri) : ref_idx(ri) {}
+    virtual bool scatter(const ray& r_in, const hit_record& rec,
+                         vec3& attenuation, ray& scattered,
+                         std::uniform_real_distribution<>& dis,
+                         std::mt19937& gen) const {
+        vec3 outward_normal;
+        float ni_over_nt;
+        vec3 refracted;
+        vec3 reflected = reflect(r_in.direction(), rec.normal);
+        attenuation = vec3(1.0, 1.0, 1.0);
+
+        /* Set OUTWARD_NORMAL and NI_OVER_NT depending on whether ray
+           R_IN originates from outside or inside the object. */
+        if (dot(r_in.direction(), rec.normal) > 0) {
+            outward_normal = -rec.normal;
+            ni_over_nt = ref_idx;
+        }
+        else {
+            outward_normal = rec.normal;
+            ni_over_nt = 1.0 / ref_idx;
+        }
+
+        /* Set SCATTERED depending on whether ray R_IN is refracted
+           or reflected after hitting the material. */
+        if (refract(r_in.direction(), outward_normal, ni_over_nt, refracted)) {
+            scattered = ray(rec.p, refracted);
+        }
+        else {
+            scattered = ray(rec.p, reflected);
+            return false;
+        }
+        return true;
+    }
+
+    float ref_idx;
+};
+
 #endif
