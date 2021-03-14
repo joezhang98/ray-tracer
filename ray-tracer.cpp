@@ -5,6 +5,7 @@
 #include "float.h"
 #include "hittable-list.h"
 #include "material-types.h"
+#include "scenes.h"
 #include "sphere.h"
 
 /* Given a ray R and a scene with objects WORLD, determines the color
@@ -49,39 +50,18 @@ int main() {
     std::uniform_real_distribution<> dis(0.0, 1.0);
 
     /* Set screen size (NX, NY) and supersampling rate (NS). */
-    int nx = 200;
-    int ny = 100;
-    int ns = 100;
+    int nx = 1200;
+    int ny = 800;
+    int ns = 10;
     file << "P3\n" << nx << " " << ny << "\n255\n";
 
-    /* Construct list of objects in the scene. */
-    hittable *list[5];
-
-    /* Small diffuse blue sphere. */
-    list[0] = new sphere(vec3(0, 0, -1), 0.5,
-                         new lambertian(vec3(0.1, 0.2, 0.5)));
-
-    /* Large diffuse green sphere. */                     
-    list[1] = new sphere(vec3(0, -100.5, -1), 100,
-                         new lambertian(vec3(0.8, 0.8, 0.0)));
-
-    /* Medium-fuzz metal. */
-    list[2] = new sphere(vec3(1, 0, -1) ,0.5,
-                         new metal(vec3(0.8, 0.6, 0.2), 0.5));
-    
-    /* Basic dielectric. */
-    list[3] = new sphere(vec3(-1, 0, -1) ,0.5, new dielectric(1.5));
-
-    /* Dielectric sphere with negative radius. */
-    list[4] = new sphere(vec3(-1, 0, -1), -0.45, new dielectric(1.5));
-    
-    hittable *world = new hittable_list(list, 5);
+    hittable *world = random_scene(dis, gen);
 
     /* Construct camera. */
-    vec3 lookfrom(3, 3, 2);
-    vec3 lookat(0, 0, -1);
-    float dist_to_focus = (lookfrom - lookat).length();
-    float aperture = 2.0;
+    vec3 lookfrom(13, 2, 3);
+    vec3 lookat(0, 0, 0);
+    float dist_to_focus = 10.0;
+    float aperture = 0.1;
     camera cam(lookfrom, lookat, vec3(0, 1, 0),
                20, float(nx)/float(ny), aperture, dist_to_focus);
 
