@@ -55,7 +55,7 @@ int main() {
     file << "P3\n" << nx << " " << ny << "\n255\n";
 
     /* Construct list of objects in the scene. */
-    hittable *list[4];
+    hittable *list[5];
 
     /* Small diffuse blue sphere. */
     list[0] = new sphere(vec3(0, 0, -1), 0.5,
@@ -70,10 +70,12 @@ int main() {
                          new metal(vec3(0.8, 0.6, 0.2), 0.5));
     
     /* Basic dielectric. */
-    list[3] = new sphere(vec3(-1, 0, -1) ,0.5,
-                         new dielectric(1.5));
+    list[3] = new sphere(vec3(-1, 0, -1) ,0.5, new dielectric(1.5));
+
+    /* Dielectric sphere with negative radius. */
+    list[4] = new sphere(vec3(-1, 0, -1), -0.45, new dielectric(1.5));
     
-    hittable *world = new hittable_list(list, 4);
+    hittable *world = new hittable_list(list, 5);
     camera cam;
 
     /* Write pixels out in rows from left to right, starting at the

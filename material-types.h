@@ -36,6 +36,13 @@ bool refract(const vec3& v, const vec3& n, float ni_over_nt, vec3& refracted) {
         return false;
 }
 
+/* Schlick polynomial approximation to simulate reflectivity that
+   varies with angle for real glass. */
+float schlick(float cosine, float ref_idx) {
+    float r0 = (1-ref_idx) / (1+ref_idx);
+    return r0*r0 + (1-r0*r0) * pow((1-cosine), 5);
+}
+
 /*
    A diffuse material.
 */
@@ -85,7 +92,7 @@ public:
 };
 
 /*
-   A dielectric material.
+   A dielectric material (with angle-varying reflectivity).
 */
 class dielectric : public material {
 public:
@@ -100,26 +107,43 @@ public:
         vec3 reflected = reflect(r_in.direction(), rec.normal);
         attenuation = vec3(1.0, 1.0, 1.0);
 
+        /* Terms for the Schlick approximation. */
+        float reflect_prob;
+        float cosine;
+
         /* Set OUTWARD_NORMAL and NI_OVER_NT depending on whether ray
            R_IN originates from outside or inside the object. */
         if (dot(r_in.direction(), rec.normal) > 0) {
             outward_normal = -rec.normal;
             ni_over_nt = ref_idx;
+            cosine = ref_idx * dot(r_in.direction(), rec.normal) /
+                r_in.direction().length();
         }
         else {
             outward_normal = rec.normal;
             ni_over_nt = 1.0 / ref_idx;
+            cosine = -dot(r_in.direction(), rec.normal) /
+                r_in.direction().length();
         }
 
-        /* Set SCATTERED depending on whether ray R_IN is refracted
-           or reflected after hitting the material. */
+        /* Determine whether R_IN refracts or reflects and set
+           REFLECT_PROB accordingly. */
         if (refract(r_in.direction(), outward_normal, ni_over_nt, refracted)) {
-            scattered = ray(rec.p, refracted);
+            reflect_prob = schlick(cosine, ref_idx);
         }
         else {
-            scattered = ray(rec.p, reflected);
-            return false;
+            reflect_prob = 1.0;
         }
+
+        /* Set SCATTERED taking into account REFLECT_PROB which
+           reflects the fact that reflectivity varies with angle. */
+        if (dis(gen) < reflect_prob) {
+            scattered = ray(rec.p, reflected);
+        }
+        else {
+            scattered = ray(rec.p, refracted);
+        }
+
         return true;
     }
 
