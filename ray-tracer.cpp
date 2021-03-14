@@ -76,7 +76,14 @@ int main() {
     list[4] = new sphere(vec3(-1, 0, -1), -0.45, new dielectric(1.5));
     
     hittable *world = new hittable_list(list, 5);
-    camera cam;
+
+    /* Construct camera. */
+    vec3 lookfrom(3, 3, 2);
+    vec3 lookat(0, 0, -1);
+    float dist_to_focus = (lookfrom - lookat).length();
+    float aperture = 2.0;
+    camera cam(lookfrom, lookat, vec3(0, 1, 0),
+               20, float(nx)/float(ny), aperture, dist_to_focus);
 
     /* Write pixels out in rows from left to right, starting at the
        top row and ending at the bottom row. */
@@ -89,7 +96,7 @@ int main() {
             for (int s = 0; s < ns; s++) {
                 float u = float(i + dis(gen)) / float(nx);
                 float v = float(j + dis(gen)) / float(ny);
-                ray r = cam.get_ray(u, v);
+                ray r = cam.get_ray(u, v, dis, gen);
                 vec3 p = r.point_at_parameter(2.0);  /* Unused? */
                 col += color(r, world, 0, dis, gen);
             }
