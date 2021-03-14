@@ -2,6 +2,9 @@
 #define HITTABLE_LISTH
 #include "hittable.h"
 
+/*
+   A class to represent a list of hittable objects.
+*/
 class hittable_list : public hittable {
 public:
     hittable_list() {}
@@ -12,6 +15,10 @@ public:
     int list_size;
 };
 
+/* Determines the closest point of intersection between a ray R and
+   a list of objects, subject to the valid hit interval T_MIN to
+   T_MAX. Information about the point of closest intersection (if
+   any) is stored in REC. */
 bool hittable_list::hit(const ray& r, float t_min, float t_max,
                         hit_record& rec) const {
     hit_record temp_rec;

@@ -2,6 +2,15 @@
 #define CAMERAH
 #include "ray.h"
 
+/*
+   A camera class to encapsulate the axis-aligned camera with
+   location at the origin and looking down the negative z-axis.
+
+   lower_left_corner denotes the coordinate of the lower left
+   corner of the screen, and horizontal and vertical are two
+   offset vectors used to move the ray endpoint across the
+   screen, starting from the lower left corner.
+*/
 class camera {
 public:
     camera () {

@@ -2,6 +2,11 @@
 #include <math.h>
 #include <stdlib.h>
 
+/*
+   A vector class for storing geometric vectors and colors. For
+   geometry, the coordinates represent x, y, z values. For color,
+   the coordinates represent R, G, and B values.
+*/
 class vec3 {
 public:
     vec3() {}

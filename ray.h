@@ -2,6 +2,10 @@
 #define RAYH
 #include "vec3.h"
 
+/*
+   A ray class for computing the color seen along a particular ray.
+   Rays are represented as an origin A and a direction B.
+*/
 class ray {
 public:
     ray() {}
