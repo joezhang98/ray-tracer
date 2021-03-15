@@ -5,14 +5,22 @@
 
 /* Solve for ray-sphere intersection using substitution of the ray
    equation for ray R into the equation of a sphere with center
-   CENTER and radius RADIUS and applying the quadratic formula. */
-bool hit_sphere(const point3& center, double radius, const ray& r) {
+   CENTER and radius RADIUS and applying the quadratic formula.
+   
+   Returns the T value at intersection (-1 otherwise) which can be
+   used to visualize surface normals with a color map. */
+double hit_sphere(const point3& center, double radius, const ray& r) {
     vec3 oc = r.origin() - center;
-    auto a = dot(r.direction(), r.direction());
-    auto b = 2.0 * dot(oc, r.direction());
-    auto c = dot(oc, oc) - radius*radius;
-    auto discriminant = b*b - 4*a*c;
-    return (discriminant > 0);
+    auto a = r.direction().length_squared();
+    auto half_b = dot(oc, r.direction());
+    auto c = oc.length_squared() - radius*radius;
+    auto discriminant = half_b*half_b - a*c;
+    if (discriminant < 0) {
+        return -1.0;
+    }
+    else {
+        return (-half_b - sqrt(discriminant)) / a;
+    }
 }
 
 /* Given a ray R, determines the color that would be observed at a
@@ -20,14 +28,17 @@ bool hit_sphere(const point3& center, double radius, const ray& r) {
    3-vector encoding RGB values. */
 color ray_color(const ray& r) {
 
-    /* Color pixel red if ray hits a small sphere at image center. */
-    if (hit_sphere(point3(0, 0, -1), 0.5, r))
-        return color(1, 0, 0);
+    /* Visualize surface normals on small sphere at image center. */
+    auto t = hit_sphere(point3(0, 0, -1), 0.5, r);
+    if (t > 0.0) {
+        vec3 N = unit_vector(r.at(t) - vec3(0, 0, -1));
+        return 0.5 * color(N.x()+1, N.y()+1, N.z()+1);
+    }
 
     /* Linearly interpolate between blue and white for the
        background, starting with blue at the top. */
     vec3 unit_direction = unit_vector(r.direction());
-    auto t = 0.5 * (unit_direction.y() + 1.0);
+    t = 0.5 * (unit_direction.y() + 1.0);
     return (1.0-t)*color(1.0, 1.0, 1.0) + t*color(0.5, 0.7, 1.0);
 }
 
