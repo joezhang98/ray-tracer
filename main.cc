@@ -3,10 +3,26 @@
 #include "ray.h"
 #include "vec3.h"
 
+/* Solve for ray-sphere intersection using substitution of the ray
+   equation for ray R into the equation of a sphere with center
+   CENTER and radius RADIUS and applying the quadratic formula. */
+bool hit_sphere(const point3& center, double radius, const ray& r) {
+    vec3 oc = r.origin() - center;
+    auto a = dot(r.direction(), r.direction());
+    auto b = 2.0 * dot(oc, r.direction());
+    auto c = dot(oc, oc) - radius*radius;
+    auto discriminant = b*b - 4*a*c;
+    return (discriminant > 0);
+}
+
 /* Given a ray R, determines the color that would be observed at a
    particular location on the screen, and returns the color as a 
    3-vector encoding RGB values. */
 color ray_color(const ray& r) {
+
+    /* Color pixel red if ray hits a small sphere at image center. */
+    if (hit_sphere(point3(0, 0, -1), 0.5, r))
+        return color(1, 0, 0);
 
     /* Linearly interpolate between blue and white for the
        background, starting with blue at the top. */
@@ -42,7 +58,7 @@ int main() {
         for (int i = 0; i < image_width; ++i) {
             auto u = double(i) / (image_width-1);
             auto v = double(j) / (image_height-1);
-            
+
             ray r(origin,
                   lower_left_corner + u*horizontal + v*vertical - origin);
             color pixel_color = ray_color(r);
