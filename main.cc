@@ -1,44 +1,22 @@
+#include "util.h"
 #include <iostream>
 #include "color.h"
-#include "ray.h"
-#include "vec3.h"
+#include "hittable-list.h"
+#include "sphere.h"
 
-/* Solve for ray-sphere intersection using substitution of the ray
-   equation for ray R into the equation of a sphere with center
-   CENTER and radius RADIUS and applying the quadratic formula.
-   
-   Returns the T value at intersection (-1 otherwise) which can be
-   used to visualize surface normals with a color map. */
-double hit_sphere(const point3& center, double radius, const ray& r) {
-    vec3 oc = r.origin() - center;
-    auto a = r.direction().length_squared();
-    auto half_b = dot(oc, r.direction());
-    auto c = oc.length_squared() - radius*radius;
-    auto discriminant = half_b*half_b - a*c;
-    if (discriminant < 0) {
-        return -1.0;
-    }
-    else {
-        return (-half_b - sqrt(discriminant)) / a;
-    }
-}
-
-/* Given a ray R, determines the color that would be observed at a
-   particular location on the screen, and returns the color as a 
-   3-vector encoding RGB values. */
-color ray_color(const ray& r) {
-
-    /* Visualize surface normals on small sphere at image center. */
-    auto t = hit_sphere(point3(0, 0, -1), 0.5, r);
-    if (t > 0.0) {
-        vec3 N = unit_vector(r.at(t) - vec3(0, 0, -1));
-        return 0.5 * color(N.x()+1, N.y()+1, N.z()+1);
+/* Given a ray R and a list of objects WORLD, determines the color
+   that would be observed at a particular location on the screen,
+   returning the color as a 3-vector encoding RGB values. */
+color ray_color(const ray& r, const hittable& world) {
+    hit_record rec;
+    if (world.hit(r, 0, infinity, rec)) {
+        return 0.5 * (rec.normal + color(1, 1, 1));
     }
 
     /* Linearly interpolate between blue and white for the
        background, starting with blue at the top. */
     vec3 unit_direction = unit_vector(r.direction());
-    t = 0.5 * (unit_direction.y() + 1.0);
+    auto t = 0.5 * (unit_direction.y() + 1.0);
     return (1.0-t)*color(1.0, 1.0, 1.0) + t*color(0.5, 0.7, 1.0);
 }
 
@@ -48,6 +26,11 @@ int main() {
     const auto aspect_ratio = 16.0/9.0;
     const int image_width = 400;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
+
+    /* Make world. */
+    hittable_list world;
+    world.add(make_shared<sphere>(point3(0, 0, -1), 0.5));
+    world.add(make_shared<sphere>(point3(0, -100.5, -1), 100));
 
     /* Set camera parameters. */
     auto viewport_height = 2.0;
@@ -72,7 +55,7 @@ int main() {
 
             ray r(origin,
                   lower_left_corner + u*horizontal + v*vertical - origin);
-            color pixel_color = ray_color(r);
+            color pixel_color = ray_color(r, world);
             write_color(std::cout, pixel_color);
         }
     }
