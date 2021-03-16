@@ -65,6 +65,14 @@ public:
                     random_double(min, max));
     }
 
+    /* Returns true if the vector is near zero in all dimensions. */
+    inline bool near_zero() const {
+        const auto s = 1e-8;
+        return (fabs(e[0]) < s) &&
+               (fabs(e[1]) < s) &&
+               (fabs(e[2]) < s);
+    }
+
 public:
     double e[3];
 };
@@ -117,7 +125,7 @@ inline vec3 unit_vector(vec3 v) {
 }
 
 /* Returns a random point in a unit radius sphere with center
-    at the origin. */
+    at the origin (approximation to Lambertian diffuse). */
 inline vec3 random_in_unit_sphere() {
     while (true) {
         auto p = vec3::random(-1, 1);
@@ -129,9 +137,25 @@ inline vec3 random_in_unit_sphere() {
 }
 
 /* Returns a random point on the surface of the unit sphere with
-   center at the origin. */
+   center at the origin (Lambertian diffuse). */
 inline vec3 random_unit_vector() {
     return unit_vector(random_in_unit_sphere());
+}
+
+/* Returns a point based on a uniform scatter direction for all
+   angles (i.e., no dependence on the angle from the normal). */
+inline vec3 random_in_hemisphere(const vec3& normal) {
+    vec3 in_unit_sphere = random_in_unit_sphere();
+    if (dot(in_unit_sphere, normal) > 0.0)
+        return in_unit_sphere;
+    else   
+        return -in_unit_sphere;
+}
+
+/* Given an incident ray with direction V and a surface normal N,
+   returns the direction of the reflected ray. */
+inline vec3 reflect(const vec3& v, const vec3& n) {
+    return v - 2*dot(v, n)*n;
 }
 
 #endif

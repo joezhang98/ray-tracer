@@ -1,15 +1,20 @@
 #ifndef HITTABLE_H
 #define HITTABLE_H
 
-#include "ray.h"
+#include "util.h"
+
+/* Reference to the material class to avoid circular references since
+   hittable objects and materials need to know about each other. */
+class material;
 
 /* A hit record contains information about the point of intersection
    between a ray and an object. */
 struct hit_record {
-    point3 p;         /* The point of intersection. */
-    vec3 normal;      /* The surface normal at the point of intersection. */
-    double t;         /* The relative distance along the ray of the hit. */
-    bool front_face;  /* True if ray outside, false if ray inside. */
+    point3 p;                      /* The point of intersection. */
+    vec3 normal;                   /* The surface normal at P. */
+    double t;                      /* The relative distance along the ray. */
+    bool front_face;               /* True if ray outside, false if inside. */
+    shared_ptr<material> mat_ptr;  /* Reference to object material type. */
 
     /* Sets OUTWARD_NORMAL based on direction of ray R. */
     inline void set_face_normal(const ray& r, const vec3& outward_normal) {
