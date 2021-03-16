@@ -124,6 +124,18 @@ inline vec3 unit_vector(vec3 v) {
     return v / v.length();
 }
 
+/* Selects and returns a random point in a unit radius disk
+   centered at the origin in the xy-plane. */
+inline vec3 random_in_unit_disk() {
+    while (true) {
+        auto p = vec3(random_double(-1, 1), random_double(-1, 1), 0);
+        if (p.length_squared() >= 1)
+            continue;
+
+        return p;
+    }
+}
+
 /*
    Functions for computing reflection and refraction of incident rays
    off surfaces with different material types.
