@@ -1,35 +1,49 @@
-#ifndef SPHERE_H
-#define SPHERE_H
+#ifndef MOVING_SPHERE_H
+#define MOVING_SPHERE_H
 
 #include "hittable.h"
-#include "vec3.h"
+#include "util.h"
 
 /*
    A sphere object represented by a center CEN and radius R.
 */
-class sphere : public hittable {
+class moving_sphere : public hittable {
 public:
-    sphere() {}
-    sphere(point3 cen, double r, shared_ptr<material> m)
-        : center(cen), radius(r), mat_ptr(m) {};
+    moving_sphere() {}
+    moving_sphere(point3 cen0, point3 cen1, double _time0, double _time1,
+                  double r, shared_ptr<material> m)
+        : center0(cen0), center1(cen1), time0(_time0), time1(_time1),
+        radius(r), mat_ptr(m) {};
 
-    virtual bool hit(const ray&r, double t_min, double t_max,
+    virtual bool hit(const ray& r, double t_min, double t_max,
                      hit_record& rec) const override;
-    
+                    
+    point3 center(double time) const;
+
 public:
-    point3 center;                 /* Sphere center. */
+    point3 center0, center1;       /* Beginning and end center of sphere. */
+    double time0, time1;           /* (time0, center0), (time1, center1). */
     double radius;                 /* Sphere radius. */
     shared_ptr<material> mat_ptr;  /* Reference to sphere material. */
 };
+
+/* Returns the center of the sphere at TIME, given that the center
+   is at center0 at time0 and moves linearly to center1 at time1. */
+point3 moving_sphere::center(double time) const {
+    return center0 + ((time - time0) / (time1 - time0))*(center1 - center0);
+}
 
 /* Solve for ray-sphere intersection using substitution of the ray
    equation for ray R into the equation of a sphere and applying
    the quadratic formula. T_MIN and T_MAX dictate the interval for
    a valid hit, and properties of the intersection point (if any)
-   are stored in REC. */
-bool sphere::hit(const ray& r, double t_min, double t_max,
-                 hit_record& rec) const {
-    vec3 oc = r.origin() - center;
+   are stored in REC. 
+   
+   Since this is a moving sphere, use center(time) with the ray time
+   to get the correct intersection (if any). */
+bool moving_sphere::hit(const ray& r, double t_min, double t_max,
+                        hit_record& rec) const {
+    vec3 oc = r.origin() - center(r.time());
     auto a = r.direction().length_squared();
     auto half_b = dot(oc, r.direction());
     auto c = oc.length_squared() - radius*radius;
@@ -50,7 +64,7 @@ bool sphere::hit(const ray& r, double t_min, double t_max,
     /* Store information about point of intersection in REC. */
     rec.t = root;
     rec.p = r.at(rec.t);
-    auto outward_normal = (rec.p - center) / radius;
+    vec3 outward_normal = (rec.p - center(r.time())) / radius;
     rec.set_face_normal(r, outward_normal);
     rec.mat_ptr = mat_ptr;
 

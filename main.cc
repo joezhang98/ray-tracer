@@ -5,7 +5,6 @@
 #include "color.h"
 #include "hittable-list.h"
 #include "material.h"
-#include "sphere.h"
 
 /* Given a ray R and a list of objects WORLD, determines the color
    that would be observed at a particular location on the screen,
@@ -41,10 +40,10 @@ color ray_color(const ray& r, const hittable& world, int depth) {
 int main() {
 
     /* Set screen size and samples per pixel. */
-    const auto aspect_ratio = 3.0/2.0;
-    const int image_width = 1200;
+    const auto aspect_ratio = 16.0 / 9.0;
+    const int image_width = 400;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
-    const int samples_per_pixel = 1;
+    const int samples_per_pixel = 10;
     
     /* Sets the maximum recursion depth for ray bounces. */
     const int max_depth = 50;
@@ -53,13 +52,13 @@ int main() {
     auto world = random_scene();
 
     /* Make camera. */
-    point3 lookfrom(13, 3, 2);
+    point3 lookfrom(13, 2, 3);
     point3 lookat(0, 0, 0);
     vec3 vup(0, 1, 0);
     auto dist_to_focus = 10.0;
     auto aperture = 0.1;
     camera cam(lookfrom, lookat, vup,
-               20, aspect_ratio, aperture, dist_to_focus);
+               20, aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
 
     std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 
