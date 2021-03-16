@@ -4,11 +4,23 @@
 #include <iostream>
 #include "vec3.h"
 
-/* Converts PIXEL_COLOR to RGB values and writes to OUT. */
-void write_color(std::ostream &out, color pixel_color) {
-    out << static_cast<int>(255.999 * pixel_color.r()) << ' '
-        << static_cast<int>(255.999 * pixel_color.g()) << ' '
-        << static_cast<int>(255.999 * pixel_color.b()) << '\n';
+/* Converts PIXEL_COLOR to RGB values, scales by SAMPLES_PER_PIXEL,
+   and writes the resulting color as RGB values to OUT. */
+void write_color(std::ostream &out, color pixel_color, 
+                 int samples_per_pixel) {
+    auto r = pixel_color.r();
+    auto g = pixel_color.g();
+    auto b = pixel_color.b();
+
+    /* Scale color values by number of samples. */
+    auto scale = 1.0 / samples_per_pixel;
+    r *= scale;
+    g *= scale;
+    b *= scale;
+
+    out << static_cast<int>(256 * clamp(r, 0.0, 0.999)) << ' '
+        << static_cast<int>(256 * clamp(g, 0.0, 0.999)) << ' '
+        << static_cast<int>(256 * clamp(b, 0.0, 0.999)) << '\n';
 }
 
 #endif
