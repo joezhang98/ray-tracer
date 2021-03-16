@@ -128,4 +128,10 @@ inline vec3 random_in_unit_sphere() {
     }
 }
 
+/* Returns a random point on the surface of the unit sphere with
+   center at the origin. */
+inline vec3 random_unit_vector() {
+    return unit_vector(random_in_unit_sphere());
+}
+
 #endif
