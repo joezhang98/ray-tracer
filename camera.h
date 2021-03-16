@@ -5,7 +5,8 @@
 
 /*
    A camera class to encapsulate the axis-aligned camera with
-   location at the origin and looking down the negative z-axis.
+   location at the origin and looking down the negative z-axis,
+   with adjustable field of view (fov).
 
    lower_left_corner denotes the coordinate of the lower left
    corner of the screen, and horizontal and vertical are two
@@ -14,9 +15,10 @@
 */
 class camera {
 public:
-    camera() {
-        auto aspect_ratio = 16.0 / 9.0;
-        auto viewport_height = 2.0;
+    camera(double vfov, double aspect_ratio) {
+        auto theta = degrees_to_radians(vfov);
+        auto h = tan(theta/2);
+        auto viewport_height = 2.0 * h;
         auto viewport_width = aspect_ratio * viewport_height;
         auto focal_length = 1.0;
 
