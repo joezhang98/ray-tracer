@@ -1,56 +1,66 @@
-#ifndef SCENESH
-#define SCENESH
-#include <random>
+#ifndef SCENES_H
+#define SCENES_H
+
 #include "hittable-list.h"
-#include "material-types.h"
+#include "material.h"
 #include "sphere.h"
 
 /* Scene with lots of random spheres. */
-hittable *random_scene(std::uniform_real_distribution<>& dis,
-                       std::mt19937& gen) {
-    int n = 500;
-    hittable **list = new hittable*[n+1];
+hittable_list random_scene() {
+    hittable_list world;
 
-    /* Surface sphere that acts as the ground. */
-    list[0] = new sphere(vec3(0, -1000, 0), 1000,
-                         new lambertian(vec3(0.5, 0.5, 0.5)));
-    
+    /* Sphere that acts as the ground. */
+    auto ground_material = make_shared<lambertian>(color(0.5, 0.5, 0.5));
+    world.add(make_shared<sphere>(point3(0, -1000, 0),
+                                  1000, ground_material));
+
     /* Small spheres of assorted types. */
-    int i = 1;
     for (int a = -11; a < 11; a++) {
         for (int b = -11; b < 11; b++) {
-            float choose_material = dis(gen);
-            vec3 center(a + 0.9*dis(gen), 0.2, b + 0.9*dis(gen));
-            if ((center - vec3(4, 0.2, 0)).length() > 0.9) {
-                if (choose_material < 0.8) {
-                    list[i++] = new sphere(center, 0.2, new lambertian(vec3(
-                                           dis(gen)*dis(gen),
-                                           dis(gen)*dis(gen),
-                                           dis(gen)*dis(gen))));
+            auto choose_mat = random_double();
+            point3 center(a+0.9*random_double(), 0.2, b+0.9*random_double());
+
+            if ((center - point3(4, 0.2, 0)).length() > 0.9) {
+                shared_ptr<material> sphere_material;
+
+                if (choose_mat < 0.8) {
+
+                    /* Diffuse material. */
+                    auto albedo = color::random() * color::random();
+                    sphere_material = make_shared<lambertian>(albedo);
+                    world.add(make_shared<sphere>(center, 0.2,
+                                                  sphere_material));
                 }
-                else if (choose_material < 0.95) {
-                    list[i++] = new sphere(center, 0.2, new metal(vec3(
-                                           0.5 * (1 + dis(gen)),
-                                           0.5 * (1 + dis(gen)),
-                                           0.5 * (1 + dis(gen))),
-                                           0.5 * dis(gen)));
+                else if (choose_mat < 0.95) {
+
+                    /* Metal material. */
+                    auto albedo = color::random(0.5, 1);
+                    auto fuzz = random_double(0, 0.5);
+                    sphere_material = make_shared<metal>(albedo, fuzz);
+                    world.add(make_shared<sphere>(center, 0.2,
+                                                  sphere_material));
                 }
                 else {
-                    list[i++] = new sphere(center, 0.2,
-                                           new dielectric(1.5));
+
+                    /* Dielectric material. */
+                    sphere_material = make_shared<dielectric>(1.5);
+                    world.add(make_shared<sphere>(center, 0.2,
+                                                  sphere_material));
                 }
             }
         }
     }
 
-    /* Three large spheres (dielectric (glass), diffuse, and metal). */
-    list[i++] = new sphere(vec3(0, 1, 0), 1.0, new dielectric(1.5));
-    list[i++] = new sphere(vec3(-4, 1, 0), 1.0,
-                           new lambertian(vec3(0.4, 0.2, 0.1)));
-    list[i++] = new sphere(vec3(4, 1, 0), 1.0,
-                           new metal(vec3(0.7, 0.6, 0.5), 0.0));
-
-    return new hittable_list(list, i);
+    /* Three large spheres (dielectric, diffuse, and metal). */
+    auto material1 = make_shared<dielectric>(1.5);
+    auto material2 = make_shared<lambertian>(color(0.4, 0.2, 0.1));
+    auto material3 = make_shared<metal>(color(0.7, 0.6, 0.5), 0.0);
+    
+    world.add(make_shared<sphere>(point3(0, 1, 0), 1.0, material1));
+    world.add(make_shared<sphere>(point3(-4, -1, 0), 1.0, material2));
+    world.add(make_shared<sphere>(point3(4, 1, 0), 1.0, material3));
+    
+    return world;
 }
 
 #endif
