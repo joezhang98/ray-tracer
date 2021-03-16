@@ -124,6 +124,11 @@ inline vec3 unit_vector(vec3 v) {
     return v / v.length();
 }
 
+/*
+   Functions for computing reflection and refraction of incident rays
+   off surfaces with different material types.
+*/
+
 /* Returns a random point in a unit radius sphere with center
     at the origin (approximation to Lambertian diffuse). */
 inline vec3 random_in_unit_sphere() {
@@ -156,6 +161,16 @@ inline vec3 random_in_hemisphere(const vec3& normal) {
    returns the direction of the reflected ray. */
 inline vec3 reflect(const vec3& v, const vec3& n) {
     return v - 2*dot(v, n)*n;
+}
+
+/* Given an incident ray with direction UV, a surface normal N, and
+   a ratio of refractive indices NI_OVER_NT, returns the direction of
+   the refracted ray. */
+inline vec3 refract(const vec3& uv, const vec3& n, double ni_over_nt) {
+    auto cos_theta = fmin(dot(-uv, n), 1.0);
+    vec3 r_out_perp = ni_over_nt * (uv + cos_theta*n);
+    vec3 r_out_parallel = -sqrt(fabs(1.0 - r_out_perp.length_squared())) * n;
+    return r_out_perp + r_out_parallel;
 }
 
 #endif
