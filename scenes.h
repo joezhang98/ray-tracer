@@ -132,6 +132,12 @@ hittable_list wheel_of_fortune() {
     objects.add(make_shared<sphere>(point3(4.9, 5.5, 0), 0.8, fp_lr));
     objects.add(make_shared<sphere>(point3(8.1, 5.5, 0), 0.8, fp_lr));
 
+    /* Wheel of Fortune sphere. */
+    auto wof_texture = make_shared<image_texture>("images/wof.png");
+    auto wof = make_shared<lambertian>(wof_texture);
+    
+    objects.add(make_shared<sphere>(point3(0, 6, 0), 2.5, wof));
+
     /* Build BVH of scene. */
     return hittable_list(make_shared<bvh_node>(objects, 0.0, 1.0));
 }
