@@ -59,6 +59,8 @@ int main() {
     int scene_index = 0;
 
     switch(scene_index) {
+
+        /* Random scene with many assorted spheres. */
         case 0:
             world = random_scene();
             lookfrom = point3(13, 2, 3);
@@ -66,6 +68,8 @@ int main() {
             vfov = 20.0;
             aperture = 0.1;
             break;
+
+        /* Provided scene index does not correspond to any scene. */
         default:
             std::cerr << "No scene selected.\n";
             return -1;
