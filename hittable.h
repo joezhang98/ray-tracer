@@ -1,6 +1,7 @@
 #ifndef HITTABLE_H
 #define HITTABLE_H
 
+#include "aabb.h"
 #include "util.h"
 
 /* Reference to the material class to avoid circular references since
@@ -24,13 +25,15 @@ struct hit_record {
 };
 
 /*
-   An abstract class for anything that a ray might intersect with or
-   hit (hence "hittable").
+   An abstract class for anything enclosed in a bounding box that a
+   ray might intersect with or hit (hence "hittable").
 */
 class hittable {
 public:
     virtual bool hit(const ray& r, double t_min, double t_max,
-                     hit_record& rec) const = 0;
+                     hit_record& rec) const = 0;            
+    virtual bool bounding_box(double time0, double time1,
+                              aabb& output_box) const = 0;
 };
 
 #endif

@@ -35,6 +35,11 @@ inline double random_double(double min, double max) {
     return min + (max-min)*random_double();
 }
 
+/* Returns a random integer in the range [MIN, MAX]. */
+inline int random_int(int min, int max) {
+    return static_cast<int>(random_double(min, max+1));
+}
+
 /* Clamps value X to the range [MIN, MAX]. */
 inline double clamp(double x, double min, double max) {
     if (x < min) return min;
