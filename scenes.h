@@ -105,4 +105,23 @@ hittable_list earth() {
     return hittable_list(globe);
 }
 
+/* Wheel of Fortune scene (case 4). */
+hittable_list wheel_of_fortune() {
+    hittable_list objects;
+
+    /* Marble ground (using Perlin noise). */
+    auto marble = make_shared<noise_texture>(4);
+    objects.add(make_shared<sphere>(point3(0, -1000, 0),
+                                    1000, make_shared<lambertian>(marble)));
+
+    /* CS 248 sphere (with Earth image for debugging). */
+    auto earth_texture = make_shared<image_texture>("earthmap.jpeg");
+    auto cs248 = make_shared<lambertian>(earth_texture);  
+    objects.add(make_shared<sphere>(point3(0, 1, 0), 1, cs248));
+
+
+    /* Build BVH of scene. */
+    return hittable_list(make_shared<bvh_node>(objects, 0.0, 1.0));
+}
+
 #endif

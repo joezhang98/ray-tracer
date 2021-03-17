@@ -39,11 +39,13 @@ color ray_color(const ray& r, const hittable& world, int depth) {
 
 int main() {
 
-    /* Set screen size and samples per pixel. */
+    /* Set screen size (debugging: 400, production: 1600). */
     const auto aspect_ratio = 16.0 / 9.0;
     const int image_width = 400;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
-    const int samples_per_pixel = 100;
+
+    /* Set samples per pixel (debugging: 10, production: 20). */
+    const int samples_per_pixel = 10;
     
     /* Sets the maximum recursion depth for ray bounces. */
     const int max_depth = 50;
@@ -56,7 +58,7 @@ int main() {
     auto aperture = 0.0;
 
     /* Select scene to render and assign parameters. */
-    int scene_index = 3;
+    int scene_index = 4;
 
     switch(scene_index) {
 
@@ -90,6 +92,14 @@ int main() {
             world = earth();
             lookfrom = point3(13, 2, 3);
             lookat = point3(0, 0, 0);
+            vfov = 20.0;
+            break;
+
+        /* Wheel of Fortune scene. */
+        case 4: 
+            world = wheel_of_fortune();
+            lookfrom = point3(0, 0, 30);
+            lookat = point3(0, 3.5, 0);
             vfov = 20.0;
             break;
 
