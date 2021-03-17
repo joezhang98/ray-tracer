@@ -124,7 +124,7 @@ int main() {
         for (int i = 0; i < image_width; ++i) {
             color pixel_color(0, 0, 0);
 
-            /* Avrerage SAMPLES_PER_PIXEL samples inside each pixel
+            /* Average SAMPLES_PER_PIXEL samples inside each pixel
                to remove jaggies in the output image. */
             for (int s = 0; s < samples_per_pixel; ++s) {
                 auto u = (i + random_double()) / (image_width-1);
