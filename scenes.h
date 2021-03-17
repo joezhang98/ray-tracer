@@ -11,10 +11,11 @@
 hittable_list random_scene() {
     hittable_list world;
 
-    /* Sphere that acts as the ground. */
-    auto ground_material = make_shared<lambertian>(color(0.5, 0.5, 0.5));
+    /* Sphere that acts as the ground with checkerboard texture. */
+    auto checker = make_shared<checker_texture>(color(0.2, 0.3, 0.1),
+                                                color(0.9, 0.9, 0.9));
     world.add(make_shared<sphere>(point3(0, -1000, 0),
-                                  1000, ground_material));
+                                  1000, make_shared<lambertian>(checker)));
 
     /* Small spheres of assorted types. */
     for (int a = -11; a < 11; a++) {
@@ -66,6 +67,20 @@ hittable_list random_scene() {
     
     /* Build BVH of scene. */
     return hittable_list(make_shared<bvh_node>(world, 0.0, 1.0));
+}
+
+/* Scene with two checkered spheres (case 1 in main). */
+hittable_list two_spheres() {
+    hittable_list objects;
+
+    auto checker = make_shared<checker_texture>(color(0.2, 0.3, 0.1),
+                                                color(0.9, 0.9, 0.9));                                    
+    objects.add (make_shared<sphere>(point3(0, -10, 0), 10,
+                                     make_shared<lambertian>(checker)));
+    objects.add (make_shared<sphere>(point3(0, 10, 0), 10,
+                                     make_shared<lambertian>(checker)));
+
+    return objects;
 }
 
 #endif

@@ -56,7 +56,7 @@ int main() {
     auto aperture = 0.0;
 
     /* Select scene to render and assign parameters. */
-    int scene_index = 0;
+    int scene_index = 1;
 
     switch(scene_index) {
 
@@ -67,6 +67,14 @@ int main() {
             lookat = point3(0, 0, 0);
             vfov = 20.0;
             aperture = 0.1;
+            break;
+
+        /* Scene with two checkered spheres. */
+        case 1:
+            world = two_spheres();
+            lookfrom = point3(13, 2, 3);
+            lookat = point3(0, 0, 0);
+            vfov = 20.0;
             break;
 
         /* Provided scene index does not correspond to any scene. */

@@ -14,6 +14,8 @@ struct hit_record {
     point3 p;                      /* The point of intersection. */
     vec3 normal;                   /* The surface normal at P. */
     double t;                      /* The relative distance along the ray. */
+    double u;                      /* U coordinate for texture lookups. */
+    double v;                      /* V coordinate for texture lookups. */
     bool front_face;               /* True if ray outside, false if inside. */
     shared_ptr<material> mat_ptr;  /* Reference to object material type. */
 
