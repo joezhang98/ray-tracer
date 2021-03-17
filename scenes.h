@@ -136,7 +136,79 @@ hittable_list wheel_of_fortune() {
     auto wof_texture = make_shared<image_texture>("images/wof.png");
     auto wof = make_shared<lambertian>(wof_texture);
     
-    objects.add(make_shared<sphere>(point3(0, 6, 0), 2.5, wof));
+    objects.add(make_shared<sphere>(point3(0, 5.6, 0), 2.8, wof));
+
+    /* "COMPUTER GRAPHICS IS COOL STUFF" text. */
+
+    /* Letter images. */
+    auto let_A = make_shared<image_texture>("images/let_A.png");
+    auto let_C = make_shared<image_texture>("images/let_C.png");
+    auto let_E = make_shared<image_texture>("images/let_E.png");
+    auto let_F = make_shared<image_texture>("images/let_F.png");
+    auto let_G = make_shared<image_texture>("images/let_G.png");
+    auto let_H = make_shared<image_texture>("images/let_H.png");
+    auto let_I = make_shared<image_texture>("images/let_I.png");
+    auto let_L = make_shared<image_texture>("images/let_L.png");
+    auto let_M = make_shared<image_texture>("images/let_M.png");
+    auto let_O = make_shared<image_texture>("images/let_O.png");
+    auto let_P = make_shared<image_texture>("images/let_P.png");
+    auto let_R = make_shared<image_texture>("images/let_R.png");
+    auto let_S = make_shared<image_texture>("images/let_S.png");
+    auto let_T = make_shared<image_texture>("images/let_T.png");
+    auto let_U = make_shared<image_texture>("images/let_U.png");
+
+    /* Blank texture. */
+    auto blank = make_shared<lambertian>(color(1.0, 1.0, 1.0));
+
+    /* Letter textures. */
+    auto text_A = make_shared<lambertian>(let_A);
+    auto text_C = make_shared<lambertian>(let_C);
+    auto text_E = make_shared<lambertian>(let_E);
+    auto text_F = make_shared<lambertian>(let_F);
+    auto text_G = make_shared<lambertian>(let_G);
+    auto text_H = make_shared<lambertian>(let_H);
+    auto text_I = make_shared<lambertian>(let_I);
+    auto text_L = make_shared<lambertian>(let_L);
+    auto text_M = make_shared<lambertian>(let_M);
+    auto text_O = make_shared<lambertian>(let_O);
+    auto text_P = make_shared<lambertian>(let_P);
+    auto text_R = make_shared<lambertian>(let_R);
+    auto text_S = make_shared<lambertian>(let_S);
+    auto text_T = make_shared<lambertian>(let_T);
+    auto text_U = make_shared<lambertian>(let_U);
+
+    /* Add spheres. */
+    objects.add(make_shared<sphere>(point3(-8.0, 1.5, 0), 0.5, text_C));
+    objects.add(make_shared<sphere>(point3(-7.0, 1.5, 0), 0.5, text_O));
+    objects.add(make_shared<sphere>(point3(-6.0, 1.5, 0), 0.5, text_M));
+    objects.add(make_shared<sphere>(point3(-5.0, 1.5, 0), 0.5, text_P));
+    objects.add(make_shared<sphere>(point3(-4.0, 1.5, 0), 0.5, text_U));
+    objects.add(make_shared<sphere>(point3(-3.0, 1.5, 0), 0.5, text_T));
+    objects.add(make_shared<sphere>(point3(-2.0, 1.5, 0), 0.5, text_E));
+    objects.add(make_shared<sphere>(point3(-1.0, 1.5, 0), 0.5, text_R));
+
+    objects.add(make_shared<sphere>(point3(1.0, 1.5, 0), 0.5, text_G));
+    objects.add(make_shared<sphere>(point3(2.0, 1.5, 0), 0.5, text_R));
+    objects.add(make_shared<sphere>(point3(3.0, 1.5, 0), 0.5, text_A));
+    objects.add(make_shared<sphere>(point3(4.0, 1.5, 0), 0.5, text_P));
+    objects.add(make_shared<sphere>(point3(5.0, 1.5, 0), 0.5, text_H));
+    objects.add(make_shared<sphere>(point3(6.0, 1.5, 0), 0.5, text_I));
+    objects.add(make_shared<sphere>(point3(7.0, 1.5, 0), 0.5, text_C));
+    objects.add(make_shared<sphere>(point3(8.0, 1.5, 0), 0.5, text_S));
+
+    objects.add(make_shared<sphere>(point3(-6.0, 0.5, 0), 0.5, text_I));
+    objects.add(make_shared<sphere>(point3(-5.0, 0.5, 0), 0.5, text_S));
+
+    objects.add(make_shared<sphere>(point3(-3.0, 0.5, 0), 0.5, text_C));
+    objects.add(make_shared<sphere>(point3(-2.0, 0.5, 0), 0.5, text_O));
+    objects.add(make_shared<sphere>(point3(-1.0, 0.5, 0), 0.5, text_O));
+    objects.add(make_shared<sphere>(point3(-0.0, 0.5, 0), 0.5, text_L));
+
+    objects.add(make_shared<sphere>(point3(2.0, 0.5, 0), 0.5, text_S));
+    objects.add(make_shared<sphere>(point3(3.0, 0.5, 0), 0.5, text_T));
+    objects.add(make_shared<sphere>(point3(4.0, 0.5, 0), 0.5, text_U));
+    objects.add(make_shared<sphere>(point3(5.0, 0.5, 0), 0.5, text_F));
+    objects.add(make_shared<sphere>(point3(6.0, 0.5, 0), 0.5, text_F));
 
     /* Build BVH of scene. */
     return hittable_list(make_shared<bvh_node>(objects, 0.0, 1.0));
