@@ -7,7 +7,7 @@
 #include "moving-sphere.h"
 #include "sphere.h"
 
-/* Scene with lots of random spheres. */
+/* Scene with lots of random spheres (case 0 in main). */
 hittable_list random_scene() {
     hittable_list world;
 
@@ -64,7 +64,7 @@ hittable_list random_scene() {
     world.add(make_shared<sphere>(point3(-4, -1, 0), 1.0, material2));
     world.add(make_shared<sphere>(point3(4, 1, 0), 1.0, material3));
     
-    // return world;
+    /* Build BVH of scene. */
     return hittable_list(make_shared<bvh_node>(world, 0.0, 1.0));
 }
 
