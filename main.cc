@@ -41,11 +41,11 @@ int main() {
 
     /* Set screen size (debugging: 400, production: 1600). */
     const auto aspect_ratio = 16.0 / 9.0;
-    const int image_width = 400;
+    const int image_width = 1600;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
 
     /* Set samples per pixel (debugging: 10, production: 20). */
-    const int samples_per_pixel = 10;
+    const int samples_per_pixel = 20;
     
     /* Sets the maximum recursion depth for ray bounces. */
     const int max_depth = 50;
