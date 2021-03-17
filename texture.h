@@ -1,6 +1,7 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
+#include "perlin.h"
 #include "util.h"
 
 /*
@@ -52,6 +53,44 @@ public:
 public:
     shared_ptr<texture> odd;   /* Color for the odd squares. */
     shared_ptr<texture> even;  /* Color for the even squares. */
+};
+
+/*
+   A Perlin noise texture.
+*/
+class noise_texture : public texture {
+public:
+    noise_texture() {}
+    noise_texture(double sc) : scale(sc) {}
+
+    virtual color value(double u, double v, const point3& p) const override {
+        
+        /* Select between different variations of Perlin noise. */
+        int perlin_type = 2;
+
+        switch(perlin_type) {
+
+            /* Regular Perlin noise. */
+            case 0:
+                return color(1, 1, 1) * 0.5 * (noise.noise(scale * p) + 1.0);
+            
+            /* Perlin noise with turbulence. */
+            case 1:
+                return color(1, 1, 1) * noise.turb(scale * p);
+
+            /* Perlin noise with phase (i.e., marble-like). */
+            case 2:
+                return color(1, 1, 1) * 0.5 
+                    * (sin(scale*p.z() + 10*noise.turb(p)) + 1.0);
+        }
+
+        /* Default: regular Perlin noise. */
+        return color(1, 1, 1) * 0.5 * (noise.noise(scale * p) + 1.0);
+    }
+
+public:
+    perlin noise;  /* Perlin noise. */
+    double scale;  /* Scale to adjust noise frequency. */
 };
 
 #endif

@@ -83,4 +83,17 @@ hittable_list two_spheres() {
     return objects;
 }
 
+/* Scene with two spheres with Perlin noise (case 2 in main). */
+hittable_list two_perlin_spheres() {
+    hittable_list objects;
+
+    auto pertext = make_shared<noise_texture>(4);
+    objects.add(make_shared<sphere>(point3(0, -1000, 0),
+                                    1000, make_shared<lambertian>(pertext)));
+    objects.add(make_shared<sphere>(point3(0, 2, 0),
+                                    2, make_shared<lambertian>(pertext)));
+
+    return objects;
+}
+
 #endif
