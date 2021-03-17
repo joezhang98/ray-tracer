@@ -7,7 +7,7 @@
 #include "moving-sphere.h"
 #include "sphere.h"
 
-/* Scene with lots of random spheres (case 0 in main). */
+/* Scene with lots of random spheres (case 0). */
 hittable_list random_scene() {
     hittable_list world;
 
@@ -69,7 +69,7 @@ hittable_list random_scene() {
     return hittable_list(make_shared<bvh_node>(world, 0.0, 1.0));
 }
 
-/* Scene with two checkered spheres (case 1 in main). */
+/* Scene with two checkered spheres (case 1). */
 hittable_list two_spheres() {
     hittable_list objects;
 
@@ -83,7 +83,7 @@ hittable_list two_spheres() {
     return objects;
 }
 
-/* Scene with two spheres with Perlin noise (case 2 in main). */
+/* Scene with two spheres with Perlin noise (case 2). */
 hittable_list two_perlin_spheres() {
     hittable_list objects;
 
@@ -94,6 +94,15 @@ hittable_list two_perlin_spheres() {
                                     2, make_shared<lambertian>(pertext)));
 
     return objects;
+}
+
+/* Scene with one sphere with Earth map image texture (case 3). */
+hittable_list earth() {
+    auto earth_texture = make_shared<image_texture>("earthmap.jpeg");
+    auto earth_surface = make_shared<lambertian>(earth_texture);
+    auto globe = make_shared<sphere>(point3(0, 0, 0), 2, earth_surface);
+
+    return hittable_list(globe);
 }
 
 #endif

@@ -56,7 +56,7 @@ int main() {
     auto aperture = 0.0;
 
     /* Select scene to render and assign parameters. */
-    int scene_index = 2;
+    int scene_index = 3;
 
     switch(scene_index) {
 
@@ -81,6 +81,14 @@ int main() {
         case 2:
             world = two_perlin_spheres();
             lookfrom = point3(13, 2 , 3);
+            lookat = point3(0, 0, 0);
+            vfov = 20.0;
+            break;
+
+        /* Scene with Earth image texture on sphere. */
+        case 3:
+            world = earth();
+            lookfrom = point3(13, 2, 3);
             lookat = point3(0, 0, 0);
             vfov = 20.0;
             break;
