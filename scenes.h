@@ -98,7 +98,7 @@ hittable_list two_perlin_spheres() {
 
 /* Scene with one sphere with Earth map image texture (case 3). */
 hittable_list earth() {
-    auto earth_texture = make_shared<image_texture>("earthmap.jpeg");
+    auto earth_texture = make_shared<image_texture>("images/earthmap.jpeg");
     auto earth_surface = make_shared<lambertian>(earth_texture);
     auto globe = make_shared<sphere>(point3(0, 0, 0), 2, earth_surface);
 
@@ -114,11 +114,23 @@ hittable_list wheel_of_fortune() {
     objects.add(make_shared<sphere>(point3(0, -1000, 0),
                                     1000, make_shared<lambertian>(marble)));
 
-    /* CS 248 sphere (with Earth image for debugging). */
-    auto earth_texture = make_shared<image_texture>("earthmap.jpeg");
-    auto cs248 = make_shared<lambertian>(earth_texture);  
-    objects.add(make_shared<sphere>(point3(0, 1, 0), 1, cs248));
+    /* CS 248 sphere with two metal spheres on left/right. */
+    auto cs248_texture = make_shared<image_texture>("images/cs248.png");
+    auto cs248 = make_shared<lambertian>(cs248_texture);
+    auto cs248_lr = make_shared<metal>(color(0.8, 0.2, 0.0), 0.3);
 
+    objects.add(make_shared<sphere>(point3(-6.5, 7, 0), 0.8, cs248));
+    objects.add(make_shared<sphere>(point3(-8.1, 7, 0), 0.8, cs248_lr));
+    objects.add(make_shared<sphere>(point3(-4.9, 7, 0), 0.8, cs248_lr));
+
+    /* Final Project sphere with two dielectrics on left/right. */
+    auto fp_texture = make_shared<image_texture>("images/final-project.png");
+    auto fp = make_shared<lambertian>(fp_texture);
+    auto fp_lr = make_shared<dielectric>(1.5);
+
+    objects.add(make_shared<sphere>(point3(6.5, 5.5, 0), 0.8, fp));
+    objects.add(make_shared<sphere>(point3(4.9, 5.5, 0), 0.8, fp_lr));
+    objects.add(make_shared<sphere>(point3(8.1, 5.5, 0), 0.8, fp_lr));
 
     /* Build BVH of scene. */
     return hittable_list(make_shared<bvh_node>(objects, 0.0, 1.0));
