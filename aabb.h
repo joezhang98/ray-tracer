@@ -18,8 +18,8 @@ public:
     point3 min() const { return minimum; }
     point3 max() const { return maximum; }
 
-    /* An optimized method for determinining intersection of ray R with
-    an axis-aligned bounding box on the interval [T_MIN, T_MAX). */
+    /* An optimized method for determinining intersection of ray R
+       with an axis-aligned bounding box in range [T_MIN, T_MAX). */
     bool hit(const ray& r, double t_min, double t_max) const {
         for (int a = 0; a < 3; a++) {
             auto invD = 1.0f / r.direction()[a];

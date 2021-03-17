@@ -43,7 +43,7 @@ int main() {
     const auto aspect_ratio = 16.0 / 9.0;
     const int image_width = 400;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
-    const int samples_per_pixel = 10;
+    const int samples_per_pixel = 100;
     
     /* Sets the maximum recursion depth for ray bounces. */
     const int max_depth = 50;
@@ -56,7 +56,7 @@ int main() {
     auto aperture = 0.0;
 
     /* Select scene to render and assign parameters. */
-    int scene_index = 0;
+    int scene_index = 3;
 
     switch(scene_index) {
 
@@ -67,6 +67,30 @@ int main() {
             lookat = point3(0, 0, 0);
             vfov = 20.0;
             aperture = 0.1;
+            break;
+
+        /* Scene with two checkered spheres. */
+        case 1:
+            world = two_spheres();
+            lookfrom = point3(13, 2, 3);
+            lookat = point3(0, 0, 0);
+            vfov = 20.0;
+            break;
+
+        /* Scene with two spheres with Perlin noise. */
+        case 2:
+            world = two_perlin_spheres();
+            lookfrom = point3(13, 2 , 3);
+            lookat = point3(0, 0, 0);
+            vfov = 20.0;
+            break;
+
+        /* Scene with Earth image texture on sphere. */
+        case 3:
+            world = earth();
+            lookfrom = point3(13, 2, 3);
+            lookat = point3(0, 0, 0);
+            vfov = 20.0;
             break;
 
         /* Provided scene index does not correspond to any scene. */
