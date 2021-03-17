@@ -178,38 +178,6 @@ hittable_list wheel_of_fortune() {
     auto text_U = make_shared<lambertian>(let_U);
 
     /* Add spheres. */
-    // objects.add(make_shared<sphere>(point3(-8.0, 1.5, 0), 0.5, text_C));
-    // objects.add(make_shared<sphere>(point3(-7.0, 1.5, 0), 0.5, text_O));
-    // objects.add(make_shared<sphere>(point3(-6.0, 1.5, 0), 0.5, blank));
-    // objects.add(make_shared<sphere>(point3(-5.0, 1.5, 0), 0.5, text_P));
-    // objects.add(make_shared<sphere>(point3(-4.0, 1.5, 0), 0.5, text_U));
-    // objects.add(make_shared<sphere>(point3(-3.0, 1.5, 0), 0.5, text_T));
-    // objects.add(make_shared<sphere>(point3(-2.0, 1.5, 0), 0.5, blank));
-    // objects.add(make_shared<sphere>(point3(-1.0, 1.5, 0), 0.5, text_R));
-
-    // objects.add(make_shared<sphere>(point3(1.0, 1.5, 0), 0.5, blank));
-    // objects.add(make_shared<sphere>(point3(2.0, 1.5, 0), 0.5, text_R));
-    // objects.add(make_shared<sphere>(point3(3.0, 1.5, 0), 0.5, blank));
-    // objects.add(make_shared<sphere>(point3(4.0, 1.5, 0), 0.5, text_P));
-    // objects.add(make_shared<sphere>(point3(5.0, 1.5, 0), 0.5, blank));
-    // objects.add(make_shared<sphere>(point3(6.0, 1.5, 0), 0.5, blank));
-    // objects.add(make_shared<sphere>(point3(7.0, 1.5, 0), 0.5, text_C));
-    // objects.add(make_shared<sphere>(point3(8.0, 1.5, 0), 0.5, text_S));
-
-    // objects.add(make_shared<sphere>(point3(-6.0, 0.5, 0), 0.5, blank));
-    // objects.add(make_shared<sphere>(point3(-5.0, 0.5, 0), 0.5, text_S));
-
-    // objects.add(make_shared<sphere>(point3(-3.0, 0.5, 0), 0.5, text_C));
-    // objects.add(make_shared<sphere>(point3(-2.0, 0.5, 0), 0.5, text_O));
-    // objects.add(make_shared<sphere>(point3(-1.0, 0.5, 0), 0.5, text_O));
-    // objects.add(make_shared<sphere>(point3(-0.0, 0.5, 0), 0.5, blank));
-
-    // objects.add(make_shared<sphere>(point3(2.0, 0.5, 0), 0.5, text_S));
-    // objects.add(make_shared<sphere>(point3(3.0, 0.5, 0), 0.5, text_T));
-    // objects.add(make_shared<sphere>(point3(4.0, 0.5, 0), 0.5, text_U));
-    // objects.add(make_shared<sphere>(point3(5.0, 0.5, 0), 0.5, blank));
-    // objects.add(make_shared<sphere>(point3(6.0, 0.5, 0), 0.5, blank));
-
     objects.add(make_shared<sphere>(point3(-8.0, 1.5, 0), 0.5, text_C));
     objects.add(make_shared<sphere>(point3(-7.0, 1.5, 0), 0.5, text_O));
     objects.add(make_shared<sphere>(point3(-6.0, 1.5, 0), 0.5, text_M));
