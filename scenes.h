@@ -12,7 +12,7 @@ hittable_list random_scene() {
     hittable_list world;
 
     /* Sphere that acts as the ground with checkerboard texture. */
-    auto checker = make_shared<checker_texture>(color(0.2, 0.3, 0.1),
+    auto checker = make_shared<checker_texture>(color(0, 0, 0),
                                                 color(0.9, 0.9, 0.9));
     world.add(make_shared<sphere>(point3(0, -1000, 0),
                                   1000, make_shared<lambertian>(checker)));

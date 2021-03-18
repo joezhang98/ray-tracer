@@ -41,11 +41,11 @@ int main() {
 
     /* Set screen size (debugging: 400, production: 1600). */
     const auto aspect_ratio = 16.0 / 9.0;
-    const int image_width = 1600;
+    const int image_width = 400;
     const int image_height = static_cast<int>(image_width / aspect_ratio);
 
     /* Set samples per pixel (debugging: 10, production: 20). */
-    const int samples_per_pixel = 20;
+    const int samples_per_pixel = 10;
     
     /* Sets the maximum recursion depth for ray bounces. */
     const int max_depth = 50;
@@ -58,7 +58,7 @@ int main() {
     auto aperture = 0.0;
 
     /* Select scene to render and assign parameters. */
-    int scene_index = 4;
+    int scene_index = 0;
 
     switch(scene_index) {
 
@@ -82,7 +82,7 @@ int main() {
         /* Scene with two spheres with Perlin noise. */
         case 2:
             world = two_perlin_spheres();
-            lookfrom = point3(13, 2 , 3);
+            lookfrom = point3(13, 2, 3);
             lookat = point3(0, 0, 0);
             vfov = 20.0;
             break;
