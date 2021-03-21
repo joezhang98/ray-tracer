@@ -7,14 +7,21 @@
 
 /*
    An abstract material class to represent different materials of
-   objects. The scatter function encapsulates the different
-   behaviors of a ray when it hits materials of different types.
-
-   SCATTERED denotes the scattered ray (if any), and ATTENUATION
-   denotes the degree of attenuation for the scattered ray.
+   objects. The emitted function concerns the color emitted by the
+   object of a given material type. The scatter function encapsulates
+   the different behaviors of a ray when it hits objects with
+   different material types.
 */
 class material {
 public:
+
+    /* Return black for non-emitting materials. */
+    virtual color emitted(double u, double v, const point3& p) const {
+        return color(0, 0, 0);
+    }
+
+    /* SCATTERED denotes the scattered ray (if any), and ATTENUATION
+       denotes the degree of attenuation for the scattered ray. */
     virtual bool scatter(const ray& r_in, const hit_record& rec,
                          color& attenuation, ray& scattered) const = 0;
 };
@@ -110,6 +117,27 @@ private:
         auto r0 = (1-ref_idx) / (1+ref_idx);
         return r0*r0 + (1-r0*r0)*pow((1 - cosine), 5);
     }
+};
+
+/*
+   A light emitting material.
+*/
+class diffuse_light : public material {
+public:
+    diffuse_light(shared_ptr<texture> a) : emit(a) {}
+    diffuse_light(color c) : emit(make_shared<solid_color>(c)) {}
+
+    virtual bool scatter(const ray& r_in, const hit_record& rec,
+                         color& attenuation, ray& scattered) const override {
+        return false;
+    }
+
+    virtual color emitted(double u, double v, const point3& p) const override {
+        return emit->value(u, v, p);
+    }
+
+public:
+    shared_ptr<texture> emit;
 };
 
 #endif

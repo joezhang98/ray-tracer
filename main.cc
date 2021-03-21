@@ -12,29 +12,29 @@
    
    DEPTH determines the extent of recursion for a ray that reflects
    off an object surface. */
-color ray_color(const ray& r, const hittable& world, int depth) {
+color ray_color(const ray& r, const color& background,
+                const hittable& world, int depth) {
     hit_record rec;
 
     /* If recursion limit reached, return black (no light). */
     if (depth <= 0)
         return color(0, 0, 0);
 
-    /* Simulate light rays reflecting off a surface. Use 0.001 for
-       T_MIN to remove shadow acne. */
-    if (world.hit(r, 0.001, infinity, rec)) {
-        ray scattered;
-        color attenuation;
-        if (rec.mat_ptr->scatter(r, rec, attenuation, scattered))
-            return attenuation * ray_color(scattered, world, depth-1);
-        
-        return color(0, 0, 0);
-    }
+    /* If the ray doesn't hit anything, return background color. Use
+       0.001 for T_MIN to remove shadow acne. */
+    if (!world.hit(r, 0.001, infinity, rec))
+        return background;
 
-    /* Linearly interpolate between blue and white for the
-       background, starting with blue at the top. */
-    vec3 unit_direction = unit_vector(r.direction());
-    auto t = 0.5 * (unit_direction.y() + 1.0);
-    return (1.0-t)*color(1.0, 1.0, 1.0) + t*color(0.5, 0.7, 1.0);
+    ray scattered;
+    color attenuation;
+    color emitted = rec.mat_ptr->emitted(rec.u, rec.v, rec.p);
+
+    /* If no scattered ray, return just the emitted color. */
+    if (!rec.mat_ptr->scatter(r, rec, attenuation, scattered))
+        return emitted;
+
+    return emitted + attenuation * ray_color(scattered, background,
+                                             world, depth-1);
 }
 
 int main() {
@@ -56,6 +56,7 @@ int main() {
     point3 lookat;
     auto vfov = 40.0;
     auto aperture = 0.0;
+    color background(0, 0, 0);
 
     /* Select scene to render and assign parameters. */
     int scene_index = 0;
@@ -65,6 +66,7 @@ int main() {
         /* Random scene with many assorted spheres. */
         case 0:
             world = random_scene();
+            background = color(0.7, 0.8, 1.0);
             lookfrom = point3(13, 2, 3);
             lookat = point3(0, 0, 0);
             vfov = 20.0;
@@ -74,6 +76,7 @@ int main() {
         /* Scene with two checkered spheres. */
         case 1:
             world = two_spheres();
+            background = color(0.7, 0.8, 1.0);
             lookfrom = point3(13, 2, 3);
             lookat = point3(0, 0, 0);
             vfov = 20.0;
@@ -82,6 +85,7 @@ int main() {
         /* Scene with two spheres with Perlin noise. */
         case 2:
             world = two_perlin_spheres();
+            background = color(0.7, 0.8, 1.0);
             lookfrom = point3(13, 2, 3);
             lookat = point3(0, 0, 0);
             vfov = 20.0;
@@ -90,6 +94,7 @@ int main() {
         /* Scene with Earth image texture on sphere. */
         case 3:
             world = earth();
+            background = color(0.7, 0.8, 1.0);
             lookfrom = point3(13, 2, 3);
             lookat = point3(0, 0, 0);
             vfov = 20.0;
@@ -98,15 +103,16 @@ int main() {
         /* Wheel of Fortune scene. */
         case 4: 
             world = wheel_of_fortune();
+            background = color(0.7, 0.8, 1.0);
             lookfrom = point3(0, 0, 30);
             lookat = point3(0, 3.5, 0);
             vfov = 20.0;
             break;
 
-        /* Provided scene index does not correspond to any scene. */
+        /* Provided scene index does not match any created scene. */
         default:
-            std::cerr << "No scene selected.\n";
-            return -1;
+            background = color(0, 0, 0);
+            break;
     }
 
     /* Make camera. */
@@ -130,7 +136,7 @@ int main() {
                 auto u = (i + random_double()) / (image_width-1);
                 auto v = (j + random_double()) / (image_height-1);
                 ray r = cam.get_ray(u, v);
-                pixel_color += ray_color(r, world, max_depth);
+                pixel_color += ray_color(r, background, world, max_depth);
             }
 
             write_color(std::cout, pixel_color, samples_per_pixel);
