@@ -1,6 +1,7 @@
 #ifndef SCENES_H
 #define SCENES_H
 
+#include "aarect.h"
 #include "bvh.h"
 #include "hittable-list.h"
 #include "material.h"
@@ -212,6 +213,43 @@ hittable_list wheel_of_fortune() {
 
     /* Build BVH of scene. */
     return hittable_list(make_shared<bvh_node>(objects, 0.0, 1.0));
+}
+
+/* Scene with object(s) as simple light(s) (case 5). */
+hittable_list simple_light() {
+    hittable_list objects;
+
+    auto pertext = make_shared<noise_texture>(4);
+    objects.add(make_shared<sphere>(point3(0, -1000, 0), 1000,
+                                    make_shared<lambertian>(pertext)));
+    objects.add(make_shared<sphere>(point3(0, 2, 0), 2,
+                                    make_shared<lambertian>(pertext)));
+
+    auto difflight = make_shared<diffuse_light>(color(4, 4, 4));
+    auto difflight_dim = make_shared<diffuse_light>(color(1, 1, 1));
+    objects.add(make_shared<xy_rect>(3, 5, 1, 3, -2, difflight));
+    objects.add(make_shared<sphere>(point3(0, 6, 0), 1.5, difflight_dim));
+
+    return objects;
+}
+
+/* Scene showing an empty "Cornell Box" (case 6). */
+hittable_list cornell_box() {
+    hittable_list objects;
+
+    auto red = make_shared<lambertian>(color(0.65, 0.05, 0.05));
+    auto white = make_shared<lambertian>(color(0.73, 0.73, 0.73));
+    auto green = make_shared<lambertian>(color(0.12, 0.45, 0.15));
+    auto light = make_shared<diffuse_light>(color(15, 15, 15));
+
+    objects.add(make_shared<yz_rect>(0, 555, 0, 555, 555, green));
+    objects.add(make_shared<yz_rect>(0, 555, 0, 555, 0, red));
+    objects.add(make_shared<xz_rect>(213, 343, 227, 332, 554, light));
+    objects.add(make_shared<xz_rect>(0, 555, 0, 555, 0, white));
+    objects.add(make_shared<xz_rect>(0, 555, 0, 555, 555, white));
+    objects.add(make_shared<xy_rect>(0, 555, 0, 555, 555, white));
+
+    return objects;
 }
 
 #endif

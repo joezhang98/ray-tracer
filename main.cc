@@ -40,17 +40,16 @@ color ray_color(const ray& r, const color& background,
 int main() {
 
     /* Set screen size (debugging: 400, production: 1600). */
-    const auto aspect_ratio = 16.0 / 9.0;
-    const int image_width = 400;
-    const int image_height = static_cast<int>(image_width / aspect_ratio);
+    auto aspect_ratio = 16.0 / 9.0;
+    int image_width = 400;
 
     /* Set samples per pixel (debugging: 10, production: 20). */
-    const int samples_per_pixel = 10;
+    int samples_per_pixel = 10;
     
     /* Sets the maximum recursion depth for ray bounces. */
-    const int max_depth = 50;
+    int max_depth = 50;
 
-    /* Scene-specific world and camera parameters. */
+    /* Default world and camera parameters. */
     hittable_list world;
     point3 lookfrom;
     point3 lookat;
@@ -59,7 +58,7 @@ int main() {
     color background(0, 0, 0);
 
     /* Select scene to render and assign parameters. */
-    int scene_index = 0;
+    int scene_index = 6;
 
     switch(scene_index) {
 
@@ -109,17 +108,40 @@ int main() {
             vfov = 20.0;
             break;
 
+        /* Scene with simple lights. */
+        case 5:
+            world = simple_light();
+            samples_per_pixel = 400;
+            background = color(0, 0, 0);
+            lookfrom = point3(26, 3, 6);
+            lookat = point3(0, 2, 0);
+            vfov = 20.0;
+            break;
+
+        /* Scene with an empty "Cornell box". */
+        case 6:
+            world = cornell_box();
+            aspect_ratio = 1.0;
+            image_width = 600;
+            samples_per_pixel = 200;
+            background = color(0, 0, 0);
+            lookfrom = point3(278, 278, -800);
+            lookat = point3(278, 278, 0);
+            vfov = 40.0;
+            break;
+
         /* Provided scene index does not match any created scene. */
         default:
             background = color(0, 0, 0);
             break;
     }
 
-    /* Make camera. */
+    /* Make camera and screen. */
     vec3 vup(0, 1, 0);
     auto dist_to_focus = 10.0;
     camera cam(lookfrom, lookat, vup,
                vfov, aspect_ratio, aperture, dist_to_focus, 0.0, 1.0);
+    int image_height = static_cast<int>(image_width / aspect_ratio);
 
     std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 
