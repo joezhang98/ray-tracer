@@ -58,7 +58,7 @@ int main() {
     color background(0, 0, 0);
 
     /* Select scene to render and assign parameters. */
-    int scene_index = 6;
+    int scene_index = 3;
 
     switch(scene_index) {
 
@@ -118,12 +118,12 @@ int main() {
             vfov = 20.0;
             break;
 
-        /* Scene with an empty "Cornell box". */
+        /* Scene with a basic "Cornell box". */
         case 6:
             world = cornell_box();
             aspect_ratio = 1.0;
             image_width = 600;
-            samples_per_pixel = 200;
+            samples_per_pixel = 20;
             background = color(0, 0, 0);
             lookfrom = point3(278, 278, -800);
             lookat = point3(278, 278, 0);
