@@ -58,7 +58,7 @@ int main() {
     color background(0, 0, 0);
 
     /* Select scene to render and assign parameters. */
-    int scene_index = 3;
+    int scene_index = 4;
 
     switch(scene_index) {
 
